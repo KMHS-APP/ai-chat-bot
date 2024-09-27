@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        if (typeof marked === 'undefined') {
+            console.error('Marked library is not loaded.');
+        }
+    </script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4">AI Chat Bot</h1>
+        <div id="chat-container" class="space-y-4">
+            <div id="chat-box" class="bg-gray-200 p-4 rounded-lg h-64 overflow-y-auto"></div>
+            <textarea id="user-input" class="w-full p-2 border rounded-lg" placeholder="메시지를 입력하세요..."></textarea>
+            <button onclick="sendMessage()" class="w-full bg-blue-500 text-white p-2 rounded-lg mt-2">전송</button>
+        </div>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            const response = await fetch('/ai', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: userInput })
+            });
+            const data = await response.json();
+
+            // chat-box에 response data 추가
+            const chatBox = document.getElementById('chat-box');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'bg-blue-100 p-2 rounded-lg mb-2';
+            userMessage.textContent = `User: ${userInput}`;
+            chatBox.appendChild(userMessage);
+
+            const botMessage = document.createElement('div');
+            botMessage.className = 'bg-green-100 p-2 rounded-lg mb-2';
+            botMessage.textContent = `Bot: ${data.response}`;
+            chatBox.appendChild(botMessage);
+
+            // 입력 필드 초기화
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+</html>
