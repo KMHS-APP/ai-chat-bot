@@ -1,3 +1,3 @@
 fastapi[all]
-vertexai
+google-cloud-aiplatform
 hypercorn
